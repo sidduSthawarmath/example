@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="ta_address")
+@Document
 public class Address {
 
 @Id
@@ -49,6 +49,12 @@ public String getCity() {
 
 public void setCity(String city) {
 	this.city = city;
+}
+
+@Override
+public String toString() {
+	return "Address [addressId=" + addressId + ", streetName=" + streetName + ", locality=" + locality + ", city="
+			+ city + "]";
 }
 
 }
