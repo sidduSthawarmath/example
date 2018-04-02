@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.test.example.domain.Customer;
 
-public interface CustomerRepository extends MongoRepository<Customer, String> {
+
+@Repository
+public interface CustomerRepository extends MongoRepository<Customer, String>,CustomCustomerRepo {
 
 	@Query(value = "{}", fields = "{lastName : 1,firstName:1}")
 	List<Customer> findAllUsingProjection();

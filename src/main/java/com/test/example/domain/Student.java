@@ -10,7 +10,11 @@ public class Student {
 @Id
 private Integer studentId;
 
-private String studentName;
+@Indexed
+private String firstName;
+
+@Indexed
+private String lastName;
 
 public Integer getStudentId() {
 	return studentId;
@@ -20,12 +24,23 @@ public void setStudentId(Integer studentId) {
 	this.studentId = studentId;
 }
 
-public String getStudentName() {
-	return studentName;
+public String getFirstName() {
+	return firstName;
 }
 
-public void setStudentName(String studentName) {
-	this.studentName = studentName;
+public void setFirstName(String firstName) {
+	this.firstName = firstName;
 }
+
+public String getLastName() {
+	return lastName;
+}
+
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+
+
+
 
 }

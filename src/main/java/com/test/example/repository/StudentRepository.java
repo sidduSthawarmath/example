@@ -6,4 +6,8 @@ import com.test.example.domain.Student;
 
 public interface StudentRepository  extends MongoRepository<Student, Integer>{
 
+	Student findByFirstName(String firstName);
+
+	Student findByFirstNameAndLastName(String firstName, String lastName);
+
 }

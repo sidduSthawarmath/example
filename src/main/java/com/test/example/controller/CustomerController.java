@@ -5,8 +5,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.test.example.app.AddressRepository;
 import com.test.example.autoincrservices.AutoIncIdConfigService;
+import com.test.example.domain.AddressAggregation;
 import com.test.example.domain.Customer;
-import com.test.example.repository.CustomerDao;
 import com.test.example.repository.CustomerRepository;
 import com.test.example.util.CommonUtil;
 import com.test.example.util.CustomResponse;
@@ -27,9 +30,6 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerRepository customerRepository;
-
-	@Autowired
-	private CustomerDao customerDao;
 
 	@Autowired
 	private AutoIncIdConfigService autoIncIdConfigService;
@@ -76,7 +76,6 @@ public class CustomerController {
 		LOG.debug("END saveCustomer");
 		return responseEntity;
 	}
-	
 
 	// Update record to database
 	@RequestMapping(value = "update", method = RequestMethod.PUT)
@@ -92,7 +91,7 @@ public class CustomerController {
 			customer.getAddress().forEach(address -> {
 				addressRepository.save(address);
 			});
-			
+
 			Customer customerObj = customerRepository.save(customer);
 			customResponse = commonUtil.getReponse(HttpStatus.CREATED, "SUCCESS", customerObj);
 			responseEntity = new ResponseEntity<CustomResponse>(customResponse, HttpStatus.CREATED);
@@ -111,7 +110,6 @@ public class CustomerController {
 		return responseEntity;
 	}
 
-	
 	// find all records from database
 	@RequestMapping(value = "findAll", method = RequestMethod.GET)
 	public ResponseEntity<CustomResponse> findAllCustomer() {
@@ -140,8 +138,6 @@ public class CustomerController {
 		return responseEntity;
 	}
 
-	
-	
 	@RequestMapping(value = "findAllUsingProjection", method = RequestMethod.GET)
 	public ResponseEntity<CustomResponse> findAllUsingProjection() {
 		LOG.debug("START findAllUsingProjection");
@@ -170,8 +166,6 @@ public class CustomerController {
 		return responseEntity;
 	}
 
-	
-	
 	@RequestMapping(value = "findByFirstName", method = RequestMethod.GET)
 	public ResponseEntity<CustomResponse> findByFirstName() {
 		LOG.debug("START findByFirstName");
@@ -179,7 +173,7 @@ public class CustomerController {
 		CustomResponse customResponse = null;
 		try {
 
-			List<Customer> customerObjList = customerDao.getCustDetByName();
+			List<Customer> customerObjList = customerRepository.getDetailsByName();
 
 			if (customerObjList.size() > 0) {
 				customResponse = commonUtil.getReponse(HttpStatus.CREATED, "SUCCESS", customerObjList);
@@ -224,5 +218,23 @@ public class CustomerController {
 		}
 		LOG.debug("END findByFirstName");
 		return responseEntity;
+	}
+
+	// Get the customer based on the pagination
+	@RequestMapping(value = "/customer/{pageNumber}/{pageSize}", method = RequestMethod.GET)
+	public ResponseEntity<List<Customer>> getAllCustomerByPagination(@PathVariable("pageNumber") Integer pageNumber,
+			@PathVariable("pageSize") Integer pageSize) {
+
+		Pageable page = PageRequest.of(pageNumber, pageSize);
+		List<Customer> mobile = customerRepository.findAll(page).getContent();
+		return new ResponseEntity<>(mobile, HttpStatus.OK);
+	}
+
+	// Get the data of customer city and the count(Aggregation)
+	@RequestMapping(value = "/customerCity", method = RequestMethod.GET)
+	public ResponseEntity<List<?>> getCityCount() {
+		List<AddressAggregation> customer = customerRepository.getCityCount();
+		return new ResponseEntity<>(customer, HttpStatus.OK);
+
 	}
 }

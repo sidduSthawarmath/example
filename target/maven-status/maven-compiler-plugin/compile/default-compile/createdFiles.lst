@@ -1,6 +1,0 @@
-com\test\example\util\Response.class
-com\test\example\app\Customer.class
-com\test\example\app\CustomerRepository.class
-com\test\example\app\SampleApplication.class
-com\test\example\util\CustomResponse.class
-com\test\example\controller\CustomerController.class

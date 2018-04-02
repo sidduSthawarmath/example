@@ -1,7 +1,5 @@
 package com.test.example.util;
 
-import org.springframework.http.HttpStatus;
-
 public class CustomResponse {
 
 
